@@ -1,0 +1,204 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+---
+title: "HW 1"
+author: "Louis Jochems"
+date: "January 23, 2019"
+output: word_document
+
+```
+
+```{r Question 1}
+
+#Question 1
+math<-read.csv("math_scores.csv")
+x=math$LSD_concentration
+hist(x)
+```
+``` {r queston 1 plot, echo = FALSE}
+###a)
+plot(math$MATH_score~math$LSD_concentration, xlab="LSD (mmol", ylab="Math Score(percent)"); curve(89.123874+ -9.009466*x, add=T)
+```
+
+```{r rest of question 1}
+###b)
+modelq1=lm(math$MATH_score~math$LSD_concentration)
+coef(modelq1)
+confint(modelq1)
+
+# slope and intercept
+a<-89.123874
+b<- -9.009466
+# 95 CI intervals
+#2.5 <- -12.87325
+#97.5 <- -5.415685
+
+###c) Metrics of model fit
+#Rsquared 
+y=math$MATH_score
+y_hat=a+b*math$LSD_concentration
+
+r2<-function(y_hat,y) {
+  RSS<-sum((((y_hat))-(y))^2)
+  TSS<-sum(((y)-(mean(y)))^2)
+  return(1-RSS/TSS)}
+
+
+#RMSE 
+rmse=function(y_hat,y) {return(sqrt(mean((y-y_hat)^2)))}
+
+#return R2
+r2(y_hat,y)
+ 0.877835
+
+#return RMSE
+rmse(y_hat,y)
+   6.022355
+
+
+##A)	85 = 89.123874+ -9.009466*x
+# -4.123874 = -9.009466*x
+#	x= 0.458 
+
+## Based on the parameter estimates of this regression model, there needs to be a max 		level of 0.458 ug/kg tissue of LSD to ensure a score of >85%. 
+
+## B)	Based on these data, his model seems show that LSD concentration predicts Math Score fairly well. There is a high R^2 and then sig p value, and the range of the confidence intervals is large and far from zero. However, this indicates a low sample size (n=7).
+	
+## C)	A normal distribution might be inappropriate to model these data because of a small sample size and these data are continuous, but will only fall between 0 and 100. 
+```
+
+
+
+``` {r Question 2}
+#Question 2 
+miracle <- read.csv("miracle_food.csv")
+x=miracle$pomegranate
+hist(x)
+```
+
+```{r question 2 plot, echo= "false"}
+##a)
+plot(miracle$Weight_loss~miracle$pomegranate); curve(-0.1789802+ -0.5251053*x, add=T)
+```
+
+``` {r rest of question 2}
+##b) parameter estimates
+modelq2=lm(miracle$Weight_loss~miracle$pomegranate)
+coef(modelq2)
+confint(modelq2)
+
+#slope and intercept 
+a <- -0.178902
+b <- -0.5251053
+
+
+##c) metrics of fit
+y=miracle$Weight_loss
+y_hat=a+b*miracle$pomegranate
+
+
+r2<-function(y_hat,y) {
+  RSS<-sum((((y_hat))-(y))^2)
+  TSS<-sum(((y)-(mean(y)))^2)
+  return(1-RSS/TSS)}
+
+
+#RMSE 
+rmse=function(y_hat,y) {return(sqrt(mean((y-y_hat)^2)))}
+
+#return R2
+r2(y_hat,y)
+ 0.008083812
+
+#return RMSE
+rmse(y_hat,y)
+  9.961044
+  
+### Answer: Disagree. R squared is low (and plus a poor predictor of fit anyways) indicating that there is little association between the two variables, there is high variance (both explained and unexplained) in the data, residual standard error is high, and CI intervals are only slightly negative. 
+```
+
+``` {r question 3}
+##A)
+#math
+a<-89.123874
+b<- -9.009466
+y=math$MATH_score
+y_hat=a+b*math$LSD_concentration
+n_math=nrow(math)
+mae=function(y_hat,y) {
+  ABS<-(sum(abs((y)-(y_hat))))
+  n <- n_math
+  return(ABS/n)
+  }
+
+#miracle
+a<- -0.1789802
+b<- -0.5251053
+y=miracle$Weight_loss
+y_hat=a+b*miracle$pomegranate
+n_miracle=nrow(miracle)
+mae=function(y_hat,y) {
+  ABS<-(sum(abs((y)-(y_hat))))
+  n <- n_miracle
+  return(ABS/n)
+}
+
+
+##return mae 
+mae(y_hat, y)
+
+##B)
+#Metric	 Math	    Miracle 
+#RMSE	 6.022355	  9.961044
+#R2	   0.877835	    0.008083812
+#MAE	  4.980145	   7.981461
+
+
+##Answer: Mean absolute error for both models shows that it gives about equal weight to all errors compared to RMSE that is higher for both models because of given weight to larger errors, especially with the case of the Miracle model. These metrics (with the exception of the R^2 for the LSD & Math Scores model) indicate that our models are fairly weak with a considerable amount of error. 
+
+```
+
+```{r question 4}
+temperature <- runif(100, min=10,max=45)
+slope <- 3
+intercept <- 5
+sd <- 3
+x=temperature; hist(x)
+Germination_rate <- rnorm(mean=intercept+slope*temperature, n=100, sd=3)
+```
+
+``` {r question 4 plot, echo=FALSE}
+plot(Germination_rate~temperature, xlab="Temperature", ylab="Germination Rate (mm/day)"); curve(5+ 3*x,add=T)
+```
+
+``` {r rest of question 4 }
+##B)
+modelq4=lm(Germination_rate~temperature)
+coef(modelq4)
+summary(modelq4)
+## return 
+a<- 4.528822    
+b<- 3.021530
+
+## C) 
+#Answer: The slope is similar to the slope I set and the intercept is about 0.5 off of my parameter estimate, likely due to the considerable Residual Std. Error of about 3.3 (I set a sigma of 3). 
+```
+
+
+``` {r question 5}
+##A)
+predictor <- runif(1000,0,100)
+response <- runif(1000,0, predictor)
+```
+```{r question 5 plot, echo=FALSE}
+plot(response~predictor, xlab= "Range of Extent (km)", ylab="Phloem Concentration (mM)")
+```
+``` {r rest of question 5} 
+##B)A particular biologica phenomena that could explain these data is the increasing range extent of a plant species results in the increase in variance of a particular trait, such as sap content of a tree species. Among a population within a given area, the variation of sap content might have considerably less variation as a selective pressure may particular narrow range of sap content phenotypes among those individuals. When you increase the range of the species in question (especially if it's a generalist species) then you may observe more variation in sap content due to more likely variation in microhabitats, or selective pressures, that could result in a high variation of sap content for this species as a whole. There tend to be many spatial and temporal (autocorrelation) examples wherein heteroscedasticity increases as a function of increase of the predictor variable. 
+```
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
